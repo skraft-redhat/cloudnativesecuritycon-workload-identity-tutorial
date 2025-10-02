@@ -1,8 +1,8 @@
 ---
 apiVersion: v1
-  kind: Namespace
-  metadata:
-    name: workload-identity-tutorial
+kind: Namespace
+metadata:
+  name: workload-identity-tutorial
 ---
 apiVersion: v1
 kind: ServiceAccount
