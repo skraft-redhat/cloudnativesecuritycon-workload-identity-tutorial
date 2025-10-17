@@ -12,5 +12,4 @@ cd $TUTORIAL_ROOT/cloudnativesecuritycon-workload-identity-tutorial
 
 kubectl apply -f resources/baseline/namespace.yaml
 
-envsubst < $TUTORIAL_ROOT/cloudnativesecuritycon-workload-identity-tutorial/resources/secure/apps/spire-debug.yaml | kubectl apply -f -
 
