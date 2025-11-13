@@ -22,6 +22,7 @@ spec:
       labels:
         identity_template: "true"
         app: spire-debug
+        env: prod
     spec:
       serviceAccountName: py
       containers:
@@ -48,3 +49,18 @@ spec:
           csi:
             driver: "csi.spiffe.io"
             readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spire-debug
+  namespace: workload-identity-tutorial
+spec:
+  type: ClusterIP
+  selector:
+    app: spire-debug
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 5000
+
