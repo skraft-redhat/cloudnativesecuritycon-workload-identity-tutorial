@@ -4,6 +4,7 @@ ROLE="dbrole"
 POLICY="dbpolicy"
 #OIDC_URL=${OIDC_URL:-$1}
 APP_DOMAIN=${APP_DOMAIN:-1}
+TRUST_DOMAIN="sk-trust-domain"
 ROOT_TOKEN=${ROOT_TOKEN:-$2}
 VAULT_ADDR=${VAULT_ADDR:-$3}
 export VAULT_ADDR=$VAULT_ADDR
@@ -77,7 +78,7 @@ EOF
       "bound_audiences": "vault",
       "bound_claims_type": "glob",
       "bound_claims": {
-        "sub":"spiffe://${APP_DOMAIN}/ns/workload-identity-tutorial/sa/py"
+        "sub":"spiffe://${TRUST_DOMAIN}/ns/workload-identity-tutorial/sa/py"
       },
       "token_ttl": "24h",
       "token_policies": "$POLICY"

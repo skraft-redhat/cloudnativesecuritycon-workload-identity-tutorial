@@ -4,7 +4,7 @@
       "bound_audiences": "vault",
       "bound_claims_type": "glob",
       "bound_claims": {
-        "sub":"spiffe://apps.cluster-fbpwk.fbpwk.sandbox240.opentlc.com/ns/workload-identity-tutorial/sa/py"
+        "sub":"spiffe://sk-trust-domain/ns/workload-identity-tutorial/sa/py"
       },
       "token_ttl": "24h",
       "token_policies": "dbpolicy"
