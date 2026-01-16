@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workload-identity-under-the-hood
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: debug
+  namespace: workload-identity-under-the-hood
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spire-debug
+  namespace: workload-identity-under-the-hood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spire-debug
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        identity_template: "true"
+        app: spire-debug
+        env: prod
+    spec:
+      serviceAccountName: debug
+      containers:
+        - name: spire-debug
+          securityContext:
+          image: tsidentity/tornjak-example-sidecar:v0.1
+          imagePullPolicy: Always
+          command: ["sleep"]
+          args: ["1000000000"]
+          env:
+          - name: SOCKETFILE
+            value: "/run/spire/sockets/spire-agent.sock"
+          volumeMounts:
+            - name: spiffe-workload-api
+              mountPath: /run/spire/sockets
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: spiffe-workload-api
+          csi:
+            driver: "csi.spiffe.io"
+            readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spire-debug
+  namespace: workload-identity-under-the-hood
+spec:
+  type: ClusterIP
+  selector:
+    app: spire-debug
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 5000
+
