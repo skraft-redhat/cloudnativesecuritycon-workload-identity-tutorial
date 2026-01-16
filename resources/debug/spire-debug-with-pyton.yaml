@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spire-debug-w-python
+  namespace: workload-identity-under-the-hood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spire-debug-w-python
+  template:
+    metadata:
+      labels:
+        app: spire-debug-w-python
+        deployment: spire-debug-w-python
+        env: prod
+    spec:
+      restartPolicy: Always
+      containers:
+        - resources: {}
+          env:
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///run/spire/sockets/spire-agent.sock
+          name: spire-debug-w-python
+          command:
+            - /bin/bash
+            - '-c'
+            - |
+              #!/bin/bash
+
+              pip install spiffe
+              while true; do sleep 10; done
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: spiffe-workload-api
+              readOnly: true
+              mountPath: /run/spire/sockets
+          terminationMessagePolicy: File
+          image: 'registry.redhat.io/ubi9/python-311:latest'
+      serviceAccountName: debug
+      volumes:
+        - name: spiffe-workload-api
+          csi:
+            driver: csi.spiffe.io
+            readOnly: true
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
